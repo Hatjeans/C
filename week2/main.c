@@ -5,6 +5,13 @@
 
 int main(int argc, char *argv[]) {
 	
+	int a, b;
+	a=10;
+	b=20;
+	
+	
 	printf("hello sookmyung electornics! \n");
+	printf("%d + %d = %d",a,b,a+b);
+	
 	return 0;
 }
