@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[]) {
 	
-	char character1, character2;
+	char character1;
 		
 	printf("enter a character : ");
 	scanf("%c", &character1 );
