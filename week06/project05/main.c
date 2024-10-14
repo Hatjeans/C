@@ -40,6 +40,10 @@ int main(int argc, char *argv[]) {
 
 			break;
 			
+		default:
+			printf("worng operator");
+			break;
+			
 	}
 	
 	
