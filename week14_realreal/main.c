@@ -288,7 +288,7 @@ int main(int argc, const char * argv[]) {
 //player_status[turn]을PLAYERSTATUS_END 값으로 설정
  		if (player_position[turn] > N_BOARD-1){
  			
- 			player_position[turn] = N_BOARD-1; // 이게 맞나요? ㅜㅜ  
+ 			player_position[turn] = N_BOARD-1; // 이거 맞나요? 맨끝에 예쁘게 잘 위치 시켜두면 되나용? 
  			player_status[turn] = PLAYERSTATUS_END;
  			
 		 }
@@ -310,11 +310,7 @@ int main(int argc, const char * argv[]) {
 	player_coin[turn] += coinResult;
 	
 	
-	printf("Coin : %d, the coin that %s has got : %d\n", coinResult, player_name[turn],	player_coin[turn]);
- 
- 
- 
- 
+	printf("Coin : %d, the coin that %s has got so far : %d\n", coinResult, player_name[turn],	player_coin[turn]);
  
  
  
@@ -328,13 +324,28 @@ int main(int argc, const char * argv[]) {
 // turn 변수를 선언하고 반복마다 1씩 증가
 //N_PLAYER로 나누기연산 수행  
         turn = (turn+1) % N_PLAYER;
- 
-
-		 
+ 	 
 	printf("\n");
 	printf("\n");
-	printf("\n"); 
+	printf("\n"); // turn을 구분하기 위해서  좀 띄우겠습니다.  
 
+    
+    
+ // ----- EX. 5 : making shark ------------   
+    
+if (turn == 0)
+{
+	int shark_pos = board_stepShark();
+	printf("Shark moved to %d \n", shark_pos);
+	checkDie();
+}
+    
+
+
+ // ----- EX. 5 : making shark ------------ 
+    
+    
+    
     
     
 // ----- EX. 6 : game end ------------
