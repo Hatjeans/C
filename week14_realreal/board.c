@@ -103,6 +103,22 @@ int board_initBoard(void)
 // ----- EX. 5 : shark ------------
 int board_stepShark(void)
 {
+	int i; 
+	int shark_step;
+	
+	shark_step = rand () % MAX_SHARKSTEP +1;
+	
+	shark_position += shark_step;
+	
+	
+	
+	for (i=0;i<shark_position;i++)
+    {
+        board_status[i] = BOARDSTATUS_NOK; // 이동하는 경로에서 board_status 배열요소 변경 
+    }
+	
+	
+	return (shark_position); 
 
 }
 // ----- EX. 5 : shark ------------
