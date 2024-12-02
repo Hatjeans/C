@@ -288,7 +288,7 @@ int main(int argc, const char * argv[]) {
 //player_status[turn]을PLAYERSTATUS_END 값으로 설정
  		if (player_position[turn] > N_BOARD-1){
  			
- 			player_position[turn] = N_BOARD-1;
+ 			player_position[turn] = N_BOARD-1; // 이게 맞나요? ㅜㅜ  
  			player_status[turn] = PLAYERSTATUS_END;
  			
 		 }
@@ -297,13 +297,20 @@ int main(int argc, const char * argv[]) {
  
 // 이동 결과 출력 
 	printf("Die result : %d , %s moved to %d \n", dieResult, player_name[turn], player_position[turn]);
-   
+
+
+
+
         //step 2-4. coin
 // 이동한 위치에서 board_getBoardCoin 함수 호출
 // 반환된 coin 값을 player_coin[turn]에 더함
 //coin이 존재하는 경우 coin 습득 정보를 출력
 	
+	coinResult = board_getBoardCoin (player_position[turn]);
+	player_coin[turn] += coinResult;
 	
+	
+	printf("Coin : %d, the coin that %s has got : %d\n", coinResult, player_name[turn],	player_coin[turn]);
  
  
  
@@ -324,8 +331,9 @@ int main(int argc, const char * argv[]) {
  
 
 		 
-
-		 
+	printf("\n");
+	printf("\n");
+	printf("\n"); 
 
     
     
