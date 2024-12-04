@@ -54,6 +54,8 @@ char player_name[N_PLAYER][MAX_CHARNAME]; // 이름
 int player_coin[N_PLAYER]; // 누적 코인수  
 int player_status[N_PLAYER]; //0 - live, 1 - die, 2 - end , 현재 상태  
 char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명 문자열  
+
+int Winnercnt[N_PLAYER] ; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트 변수 추가  
 // ----- EX. 4 : player ------------
 
 
@@ -194,22 +196,33 @@ int getAlivePlayer(void)
 int getWinner(void)
 {
 	int i;
-	int winner=0;
+	int winner=-1;
 	int max_coin = -1;
+	int player_alive = 0; //살아있는 플레이어수 확인하는 용도 
+
 	
 	for(i=0;i<N_PLAYER;i++)
 	{
-		if (player_status[N_PLAYER] != 1)	{ //
+		if (player_status[i] == PLAYERSTATUS_LIVE || player_status[i] == PLAYERSTATUS_END)	{ 
+			player_alive++;
+		
+		
 			if (player_coin[i] > max_coin){
 			
-			max_coin = player_coin[i];
-			winner = i;
-
-			}
+				max_coin = player_coin[i];
+				winner = i;
+				}
+			else if (player_coin[i] == max_coin)
+			
+				if (i<winner)
+					winner = i;
 		}
 		
-		else winner = 0;     //if all the players are died
 	}
+	
+	if (player_alive == 0) //if all the players are died
+	winner = 0;     
+
 	
 	
 	return winner;
@@ -236,6 +249,7 @@ int main(int argc, const char * argv[]) {
     int turn=0; 
     
     int pos=0;// 위치변수 선언 18p 
+    int cnt; 
 
 
 // ----- EX. 1 : Preparation------------
@@ -268,6 +282,7 @@ int main(int argc, const char * argv[]) {
         int dieResult;
         int coinResult;
         int dum;
+
 
     
         
@@ -309,6 +324,11 @@ int main(int argc, const char * argv[]) {
         //step 2-3. moving
         player_position[turn] += dieResult; // 실습4 23p player_position[turn] += dieReuslt에 주사위 결과를 더함
 // 예외 상황에 대한 대처 (N_BOARD 이상 갔을때) QQQQQ
+		
+		
+		
+		
+		cnt++; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트 변수 증가  
 
 
 // 보드 맨 끝까지 이동한 경우에 대해 처리
@@ -318,6 +338,8 @@ int main(int argc, const char * argv[]) {
  			
  			player_position[turn] = N_BOARD-1; // 이거 맞나요? 맨끝에 예쁘게 잘 위치 시켜두면 되나용? 
  			player_status[turn] = PLAYERSTATUS_END;
+
+ 			Winnercnt[N_PLAYER] = cnt; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트변수를 저장  
  			
 		 }
 		 
@@ -373,6 +395,8 @@ if (turn == 0)
     
     printf("\n");
 	printf("\n");
+	
+
     
 // ----- EX. 6 : game end ------------
     } while(game_end() == 0);
@@ -389,6 +413,8 @@ if (turn == 0)
     
     
 // ----- EX. 2 : structuring ------------
+
+
 
     return 0;
 }

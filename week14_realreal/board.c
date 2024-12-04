@@ -81,8 +81,10 @@ int board_initBoard(void)
    			{
    				board_coin[randomPosition] = (rand() % MAX_COIN) +1 ; // i번째 코인 할당, board_coin[지정칸] = (1~MAX_COIN 중 랜덤) 
 			   } 
+			   
+			
    		
-   		break; //
+   		break; // 
 	   	}
    	
    }
