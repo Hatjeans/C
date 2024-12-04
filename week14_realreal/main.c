@@ -318,52 +318,6 @@ int main(int argc, const char * argv[]) {
     
     
 // ----- EX. 2 : structuring ------------
-// ----- TEST CASES -----
-printf("\nRunning test cases...\n");
-
-// Test Case 1: All players are dead
-player_status[0] = PLAYERSTATUS_DIE;
-player_status[1] = PLAYERSTATUS_DIE;
-player_status[2] = PLAYERSTATUS_DIE;
-
-cnt = 0; // cnt 초기화 (글로벌 변수로 사용 중)
-
-// Test Case 1 실행
-int winner = getWinner();
-printf("Test Case 1 - All players died: ");
-if (winner == -1) {
-    printf("PASS (No winner, result = %d)\n", winner);
-} else {
-    printf("FAIL (Unexpected winner, result = %d)\n", winner);
-}
-
-// Reset player data
-for (i = 0; i < N_PLAYER; i++) {
-    player_status[i] = PLAYERSTATUS_LIVE;
-    player_coin[i] = 0;
-    player_position[i] = 0;
-}
-
-// Test Case 2: All players reached END, same coins
-player_status[0] = PLAYERSTATUS_END;
-player_status[1] = PLAYERSTATUS_END;
-player_status[2] = PLAYERSTATUS_END;
-player_coin[0] = 10;  // All players have the same coin count
-player_coin[1] = 10;
-player_coin[2] = 10;
-// Simulate positions and arrival order
-player_position[0] = N_BOARD - 1; // Player 0 reached first
-player_position[1] = N_BOARD - 1;
-player_position[2] = N_BOARD - 1;
-cnt = 0; // Reset global counter
-getAlivePlayer(); // Update `cnt` and `thefirstman`
-winner = getWinner();
-printf("Test Case 2 - All players reached END, same coins: ");
-if (winner == thefirstman) {
-    printf("PASS (Winner = Player %d, result = %s)\n", winner, player_name[winner]);
-} else {
-    printf("FAIL (Unexpected winner, result = Player %d, name = %s)\n", winner, player_name[winner]);
-}
 
 
     return 0;
