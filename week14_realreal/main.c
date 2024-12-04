@@ -29,8 +29,7 @@ char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명
 
 
  // 모두 END인데 동전 개수가 같을 경우, 먼저 들어온 순서를 알아내기위해  카운트 하기 위함  
-int thefirstman; // 첫번째로 도달한 사람 (cnt==1)을 저장하기 위한 변수  
-int cnt = 0; //getWinner함수 수정을 위해 밖으로 빼냄  
+int theOrderofEND [N_PLAYER] = {-1,-1,-1};  // 카운트를 인덱스로 하여 들어온 순서대로 플레이어의 인덱스를 저장  
 
 
 // ----- EX. 4 : player ------------
@@ -119,17 +118,15 @@ void checkDie(void)
 int getAlivePlayer(void)
 {
    int i;
+	int cnt = 0;
 
 
    for (i=0;i<N_PLAYER;i++)
    {
    	if (player_status[i] == PLAYERSTATUS_END)
-   	cnt++;
-   	
-   	if (cnt == 1)
    	{
-   		thefirstman = i;
-	   }
+   		cnt++;
+		} 
    	
    }
    
@@ -143,6 +140,26 @@ int getWinner(void)
 	int i;
 	int winner=-1;
 	int max_coin = -1;
+	
+	int check[100] = {};
+	/*
+	//중복여부를 탐색할 배열
+Player_coin[N_PLAYER] // 예를 들어 {4,4,3}
+
+//배열의 길이 N_PLAYER
+
+// 각 원소의 등장 횟수를 저장할 배열 
+int check [Coin_max] = {};
+
+int idx
+
+
+for (i = 0; i<N_PLAYER;i++)
+idx = a[i];
+check[idx]++;
+
+for(i=0;i<coin_max;i++)
+if check[i] == 2*/
 
 	for(i=0;i<N_PLAYER;i++)
 	{
@@ -150,19 +167,34 @@ int getWinner(void)
 					if (player_coin[i] > max_coin){
 
 						max_coin = player_coin[i];
-						winner = i;
+						winner = i; // 중복이 없는 경우 max인 사람을  winner로 만드는 로직  
 			
-				}
+				}	 
 			}
-			else if(player_coin[i] == max_coin)
-				{
-					winner = thefirstman;
-				}
-			 
-	
-	}
 
-	if (winner == -1)
+	}
+	
+	/*
+	
+	 // 중복이 있는경우에winner를 갱신  
+
+	for(i=0;i<N_PLAYER;i++)
+	{
+			if (player_status[i] == PLAYERSTATUS_END ) {
+					if (player_coin[i] > max_coin){  
+			
+				}	 
+			}
+
+	}
+	
+	*/
+	
+	
+	
+	
+
+	if (winner == -1) // 모든 사람이 죽었을 경우 위너는 존재하지 않음  
 		winner = -1;
 
 	return winner;
@@ -173,6 +205,7 @@ int main(int argc, const char * argv[]) {
     
     int i;
     int turn=0; 
+    int cnt = 0; 
     
     int pos=0;// 위치변수 선언 18p 
 // ----- EX. 1 : Preparation------------
@@ -239,8 +272,10 @@ int main(int argc, const char * argv[]) {
 //player_status[turn]을PLAYERSTATUS_END 값으로 설정
  		if (player_position[turn] > N_BOARD-1){
  			
- 			player_position[turn] = N_BOARD-1; // 이거 맞나요? 맨끝에 예쁘게 잘 위치 시켜두면 되나용? 
+ 			player_position[turn] = N_BOARD-1;
  			player_status[turn] = PLAYERSTATUS_END;
+			theOrderofEND [cnt] = turn; // PLAYERSTATUS가 END가 되었을 때 turn을 저장 ex {0,2,-1} sm, jyp만 저장됨 -1을  
+ 			cnt++;
  			
 		 }
 		 
