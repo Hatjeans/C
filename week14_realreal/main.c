@@ -32,6 +32,8 @@ char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명
 int theOrderofEND [N_PLAYER] = {-1,-1,-1};  // 카운트를 인덱스로 하여 들어온 순서대로 플레이어의 인덱스를 저장  
 
 
+
+
 // ----- EX. 4 : player ------------
 // ----- EX. 3 : board ------------
 int rolldie(void)
@@ -137,12 +139,81 @@ int getAlivePlayer(void)
 
 int getWinner(void)
 {
-	int i;
+	int i,j,k;
 	int winner=-1;
 	int max_coin = -1;
 	
-	int check[100] = {};
-	/*
+	// 중복 계산을 위한 변수들  
+	
+	int check[100] = {}; // 각 원소의 등장 횟수를 저장할 배열 
+	int idx; // 코인 배열을 순회하며 check에 등장 횟수를 저장하는 변수  
+	int bigger,smaller;
+
+
+	for(i=0;i<N_PLAYER;i++)
+	{
+			if (player_status[i] == PLAYERSTATUS_END ) {
+					if (player_coin[i] > max_coin){
+
+						max_coin = player_coin[i];
+						winner = i; // 중복이 없는 경우 max인 사람을  winner로 만드는 로직  
+			
+				}
+				
+					 
+			}
+
+	}
+	
+	
+	
+	 // 중복이 있는경우에winner를 갱신  
+	 
+	 //코인 개수 배열 (1~`100개 까지) 중 중복을 계산
+	 for (i = 0; i<N_PLAYER;i++){
+	 	idx = player_coin[i];
+		check[idx]++;
+	 }
+
+
+	for(i=0;i<N_PLAYER;i++)
+	{
+			if (player_status[i] == PLAYERSTATUS_END ) {
+					for(j=0;j<100;j++){
+						
+						if (check[j]==2)
+						{	
+							winner = theOrderofEND[0]; //End상태가 3개가 아닐때 
+							 
+							for(k=0;k<100;k++)
+							{
+								if (check[k]==1) //  End 상태 3개 
+								{
+									if (k<j) // end 상태 세개, 코인 배열 {4,4,3}, {4,3,4}, {3,4,4}인 경우  
+									{
+										if (player_coin[0]>=player_coin[1]) // {4,4,3}
+										  winner = 0;
+										else 
+										  winner = 1;	
+									}
+										
+								}
+							}
+						 } 
+							
+						if (check[j] ==3) 
+						 winner = theOrderofEND[0];
+						
+					}
+			
+				}	 
+			}
+
+
+	
+
+	
+		/*
 	//중복여부를 탐색할 배열
 Player_coin[N_PLAYER] // 예를 들어 {4,4,3}
 
@@ -160,37 +231,6 @@ check[idx]++;
 
 for(i=0;i<coin_max;i++)
 if check[i] == 2*/
-
-	for(i=0;i<N_PLAYER;i++)
-	{
-			if (player_status[i] == PLAYERSTATUS_END ) {
-					if (player_coin[i] > max_coin){
-
-						max_coin = player_coin[i];
-						winner = i; // 중복이 없는 경우 max인 사람을  winner로 만드는 로직  
-			
-				}	 
-			}
-
-	}
-	
-	/*
-	
-	 // 중복이 있는경우에winner를 갱신  
-
-	for(i=0;i<N_PLAYER;i++)
-	{
-			if (player_status[i] == PLAYERSTATUS_END ) {
-					if (player_coin[i] > max_coin){  
-			
-				}	 
-			}
-
-	}
-	
-	*/
-	
-	
 	
 	
 
@@ -353,6 +393,7 @@ int main(int argc, const char * argv[]) {
     
     
 // ----- EX. 2 : structuring ------------
+
 
 
     return 0;
