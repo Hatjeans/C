@@ -1,81 +1,45 @@
-
 //
 //  main.c
 //  sharkGame
 //
-
 #include <stdio.h>
-
-
-
-
 // ----- EX. 1 : Preparation------------
 #include <stdlib.h>
 #include <time.h>
 // ----- EX. 1 : Preparation------------
-
-
-
-
 #include "board.h"
-
-
-
-
-
 // ----- EX. 4 : player ------------
 #define N_PLAYER            3
 // ----- EX. 4 : player ------------
-
-
-
-
-
 #define MAX_CHARNAME        200
-
-
-
-
 // ----- EX. 3 : board ------------
 #define MAX_DIE             6
-
-
-
-
-
-
 // ----- EX. 4 : player ------------
 #define PLAYERSTATUS_LIVE   0
 #define PLAYERSTATUS_DIE    1
 #define PLAYERSTATUS_END    2
-
 int player_position[N_PLAYER]; // 위치  
 char player_name[N_PLAYER][MAX_CHARNAME]; // 이름  
 int player_coin[N_PLAYER]; // 누적 코인수  
 int player_status[N_PLAYER]; //0 - live, 1 - die, 2 - end , 현재 상태  
-char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명 문자열  
+char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명 문자열 
 
-int Winnercnt[N_PLAYER] ; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트 변수 추가  
+
+
+
+
+ // 모두 END인데 동전 개수가 같을 경우, 먼저 들어온 순서를 알아내기위해  카운트 하기 위함  
+int thefirstman; // 첫번째로 도달한 사람 (cnt==1)을 저장하기 위한 변수  
+int cnt = 0; //getWinner함수 수정을 위해 밖으로 빼냄  
+
+
 // ----- EX. 4 : player ------------
-
-
-
-
-
-
 // ----- EX. 3 : board ------------
 int rolldie(void)
 {
     return rand()%MAX_DIE+1;
 }
 // ----- EX. 3 : board ------------
-
-
-
-
-
-
-
 // ----- EX. 1 : Preparation------------
 void opening(void)
 {
@@ -86,18 +50,13 @@ void opening(void)
     printf("==============================================================\n");
 }
 // ----- EX. 1 : Preparation------------
-
-
-
-
-
-
 // ----- EX. 6 : game end ------------
 int game_end(void)
 {
     int i;
     int flag_end = 1;
-    
+
+    //if all the players are died?
     for (i=0;i<N_PLAYER;i++)
     {
         if (player_status[i] == PLAYERSTATUS_LIVE)
@@ -110,13 +69,6 @@ int game_end(void)
     return flag_end;
 }
 // ----- EX. 6 : game end ------------
-
-
-
-
-
-
-
 // ----- EX. 4 : player ------------
 void printPlayerPosition(int player)
 {
@@ -137,7 +89,6 @@ void printPlayerPosition(int player)
     }
     printf("|\n");
 }
-
 void printPlayerStatus(void)
 {
     int i;
@@ -150,13 +101,6 @@ void printPlayerStatus(void)
     printf("-----------------\n");
 }
 // ----- EX. 4 : player ------------
-
-
-
-
-
-
-
 // ----- EX. 5 : shark ------------
 void checkDie(void)
 {
@@ -171,23 +115,24 @@ void checkDie(void)
     }
 }
 // ----- EX. 5 : shark ------------
-
-
-
-
-
-
-
 // ----- EX. 6 : game end ------------
 int getAlivePlayer(void)
 {
    int i;
-   int cnt = 0;
+
+
    for (i=0;i<N_PLAYER;i++)
    {
    	if (player_status[i] == PLAYERSTATUS_END)
    	cnt++;
+   	
+   	if (cnt == 1)
+   	{
+   		thefirstman = i;
+	   }
+   	
    }
+   
    
    return cnt;
 }
@@ -198,73 +143,46 @@ int getWinner(void)
 	int i;
 	int winner=-1;
 	int max_coin = -1;
-	int player_alive = 0; //살아있는 플레이어수 확인하는 용도 
 
-	
 	for(i=0;i<N_PLAYER;i++)
 	{
-		if (player_status[i] == PLAYERSTATUS_LIVE || player_status[i] == PLAYERSTATUS_END)	{ 
-			player_alive++;
-		
-		
-			if (player_coin[i] > max_coin){
-			
-				max_coin = player_coin[i];
-				winner = i;
-				}
-			else if (player_coin[i] == max_coin)
-			
-				if (i<winner)
-					winner = i;
-		}
-		
-	}
-	
-	if (player_alive == 0) //if all the players are died
-	winner = 0;     
+			if (player_status[i] == PLAYERSTATUS_END ) {
+					if (player_coin[i] > max_coin){
 
+						max_coin = player_coin[i];
+						winner = i;
+			
+				}
+			}
+			else if(player_coin[i] == max_coin)
+				{
+					winner = thefirstman;
+				}
+			 
 	
-	
+	}
+
+	if (winner == -1)
+		winner = -1;
+
 	return winner;
-    
+
 }
 // ----- EX. 6 : game end ------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 int main(int argc, const char * argv[]) {
     
     int i;
     int turn=0; 
     
     int pos=0;// 위치변수 선언 18p 
-    int cnt; 
-
-
 // ----- EX. 1 : Preparation------------
     srand(time(NULL));
     opening();
 // ----- EX. 1 : Preparation------------
-
-
 // ----- EX. 2 : structuring ------------
     //step1 : initialization
     //step1-1 : board initialization
     board_initBoard();
-
-
-
 // ----- EX. 4 : player ------------
     //step1-2 : initialize player
     for (i=0;i<N_PLAYER;i++)
@@ -282,8 +200,6 @@ int main(int argc, const char * argv[]) {
         int dieResult;
         int coinResult;
         int dum;
-
-
     
         
 // ----- EX. 3 : board ------------
@@ -293,10 +209,6 @@ int main(int argc, const char * argv[]) {
 		coinResult = board_getBoardCoin(pos); //coinResult = board_getBoardCoin(pos);
         
 // ----- EX. 3 : board ------------
-
-
-
-
 // ----- EX. 4 : player ------------
         printPlayerStatus();
          //step 2-1. status printing
@@ -311,7 +223,6 @@ int main(int argc, const char * argv[]) {
             continue;
         }
 // ----- EX. 4 : player ------------
-
         //step 2-2. rolling die
 // ----- EX. 4 : player ------------
         printf("%s turn!! ", player_name[turn]);
@@ -320,17 +231,9 @@ int main(int argc, const char * argv[]) {
         fflush(stdin);
 // ----- EX. 4 : player ------------
         dieResult = rolldie();
-
         //step 2-3. moving
         player_position[turn] += dieResult; // 실습4 23p player_position[turn] += dieReuslt에 주사위 결과를 더함
 // 예외 상황에 대한 대처 (N_BOARD 이상 갔을때) QQQQQ
-		
-		
-		
-		
-		cnt++; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트 변수 증가  
-
-
 // 보드 맨 끝까지 이동한 경우에 대해 처리
 //player_position[turn]이 N_BOARD -1 인지 여부를 조건문으로 활용QQQQQ
 //player_status[turn]을PLAYERSTATUS_END 값으로 설정
@@ -338,8 +241,6 @@ int main(int argc, const char * argv[]) {
  			
  			player_position[turn] = N_BOARD-1; // 이거 맞나요? 맨끝에 예쁘게 잘 위치 시켜두면 되나용? 
  			player_status[turn] = PLAYERSTATUS_END;
-
- 			Winnercnt[N_PLAYER] = cnt; // winner 중 코인의 개수가 동일한 경우를 해결하기 위한 카운트변수를 저장  
  			
 		 }
 		 
@@ -347,10 +248,6 @@ int main(int argc, const char * argv[]) {
  
 // 이동 결과 출력 
 	printf("Die result : %d , %s moved to %d \n", dieResult, player_name[turn], player_position[turn]);
-
-
-
-
         //step 2-4. coin
 // 이동한 위치에서 board_getBoardCoin 함수 호출
 // 반환된 coin 값을 player_coin[turn]에 더함
@@ -374,36 +271,44 @@ int main(int argc, const char * argv[]) {
 // turn 변수를 선언하고 반복마다 1씩 증가
 //N_PLAYER로 나누기연산 수행  
         turn = (turn+1) % N_PLAYER;
- 	 
+
+	printf("\n");
+	printf("\n");
 
 	printf("\n"); // turn을 구분하기 위해서  좀 띄우겠습니다.  
 
-    
+
     
  // ----- EX. 5 : making shark ------------   
     
-if (turn == 0)
-{
+	if (turn == 0)
+	{
 	int shark_pos = board_stepShark();
 	printf("\n Shark moved to %d \n", shark_pos);
 	printf("\n");
 	checkDie();
-}
+	}
+
+
+
  // ----- EX. 5 : making shark ------------ 
-    
-    
-    
+
+
+
+
     printf("\n");
 	printf("\n");
-	
 
-    
 // ----- EX. 6 : game end ------------
     } while(game_end() == 0);
     
     //step 3. game end process
     printf("GAME END!!\n");
+    
+    if (getWinner() != -1)
     printf("%i players are alive! winner is %s\n", getAlivePlayer(), player_name[getWinner()]);
+    else 
+    printf("there is no winner");
 // ----- EX. 6 : game end ------------
     
     
@@ -413,12 +318,53 @@ if (turn == 0)
     
     
 // ----- EX. 2 : structuring ------------
+// ----- TEST CASES -----
+printf("\nRunning test cases...\n");
 
+// Test Case 1: All players are dead
+player_status[0] = PLAYERSTATUS_DIE;
+player_status[1] = PLAYERSTATUS_DIE;
+player_status[2] = PLAYERSTATUS_DIE;
+
+cnt = 0; // cnt 초기화 (글로벌 변수로 사용 중)
+
+// Test Case 1 실행
+int winner = getWinner();
+printf("Test Case 1 - All players died: ");
+if (winner == -1) {
+    printf("PASS (No winner, result = %d)\n", winner);
+} else {
+    printf("FAIL (Unexpected winner, result = %d)\n", winner);
+}
+
+// Reset player data
+for (i = 0; i < N_PLAYER; i++) {
+    player_status[i] = PLAYERSTATUS_LIVE;
+    player_coin[i] = 0;
+    player_position[i] = 0;
+}
+
+// Test Case 2: All players reached END, same coins
+player_status[0] = PLAYERSTATUS_END;
+player_status[1] = PLAYERSTATUS_END;
+player_status[2] = PLAYERSTATUS_END;
+player_coin[0] = 10;  // All players have the same coin count
+player_coin[1] = 10;
+player_coin[2] = 10;
+// Simulate positions and arrival order
+player_position[0] = N_BOARD - 1; // Player 0 reached first
+player_position[1] = N_BOARD - 1;
+player_position[2] = N_BOARD - 1;
+cnt = 0; // Reset global counter
+getAlivePlayer(); // Update `cnt` and `thefirstman`
+winner = getWinner();
+printf("Test Case 2 - All players reached END, same coins: ");
+if (winner == thefirstman) {
+    printf("PASS (Winner = Player %d, result = %s)\n", winner, player_name[winner]);
+} else {
+    printf("FAIL (Unexpected winner, result = Player %d, name = %s)\n", winner, player_name[winner]);
+}
 
 
     return 0;
 }
-
-
-
-
