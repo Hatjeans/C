@@ -70,9 +70,9 @@ int board_initBoard(void)
 // ----- EX. 5 : shark ------------
 
     //coin allocation
-   for (i=0;i<N_COINPOS;i++)
+   for (i=0;i<N_COINPOS;i++) // 
    {
-   		while (1) // i 번째 coin이 할당되지 않으면 반복  ㅜㅜ 
+   		while (1) // 
    		{
    			
    			int randomPosition = rand() % N_BOARD; //동전 놓을 칸을 랜덤으로 지정  
@@ -82,7 +82,7 @@ int board_initBoard(void)
    				board_coin[randomPosition] = (rand() % MAX_COIN) +1 ; // i번째 코인 할당, board_coin[지정칸] = (1~MAX_COIN 중 랜덤) 
 			   } 
    		
-   		break; // ㅜㅜ 일케 하는거 맞나용? ㅜㅜ 
+   		break; //
 	   	}
    	
    }
@@ -108,7 +108,7 @@ int board_stepShark(void)
 	
 	shark_step = rand () % MAX_SHARKSTEP +1;
 	
-	shark_position += shark_step;
+	shark_position += shark_step; 
 	
 	
 	
@@ -136,7 +136,6 @@ int board_stepShark(void)
 // ----- EX. 3 : board ------------
 int board_getBoardStatus(int pos)
 {
-	
 	
     return board_status[pos];
 }

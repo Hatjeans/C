@@ -96,7 +96,6 @@ int game_end(void)
     int i;
     int flag_end = 1;
     
-    //if all the players are died?
     for (i=0;i<N_PLAYER;i++)
     {
         if (player_status[i] == PLAYERSTATUS_LIVE)
@@ -191,6 +190,7 @@ int getAlivePlayer(void)
    return cnt;
 }
 
+
 int getWinner(void)
 {
 	int i;
@@ -199,11 +199,18 @@ int getWinner(void)
 	
 	for(i=0;i<N_PLAYER;i++)
 	{
-		if (player_coin[i] > max_coin){
+		if (player_status[N_PLAYER] != 1)	{ //
+			if (player_coin[i] > max_coin){
+			
 			max_coin = player_coin[i];
 			winner = i;
+
+			}
 		}
+		
+		else winner = 0;     //if all the players are died
 	}
+	
 	
 	return winner;
     
@@ -346,8 +353,7 @@ int main(int argc, const char * argv[]) {
 //N_PLAYER로 나누기연산 수행  
         turn = (turn+1) % N_PLAYER;
  	 
-	printf("\n");
-	printf("\n");
+
 	printf("\n"); // turn을 구분하기 위해서  좀 띄우겠습니다.  
 
     
@@ -361,14 +367,12 @@ if (turn == 0)
 	printf("\n");
 	checkDie();
 }
-    
-
-
  // ----- EX. 5 : making shark ------------ 
     
     
     
-    
+    printf("\n");
+	printf("\n");
     
 // ----- EX. 6 : game end ------------
     } while(game_end() == 0);
