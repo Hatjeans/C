@@ -159,8 +159,6 @@ int getWinner(void)
 						winner = i; // 중복이 없는 경우 max인 사람을  winner로 만드는 로직  
 			
 				}
-				
-					 
 			}
 
 	}
@@ -314,6 +312,7 @@ int main(int argc, const char * argv[]) {
  			
  			player_position[turn] = N_BOARD-1;
  			player_status[turn] = PLAYERSTATUS_END;
+ 			
 			theOrderofEND [cnt] = turn; // PLAYERSTATUS가 END가 되었을 때 turn을 저장 ex {0,2,-1} sm, jyp만 저장됨 -1을  
  			cnt++;
  			
@@ -345,7 +344,7 @@ int main(int argc, const char * argv[]) {
 // game 반복문에서 한번 반복 후 다음 player로 넘어감 
 // turn 변수를 선언하고 반복마다 1씩 증가
 //N_PLAYER로 나누기연산 수행  
-        turn = (turn+1) % N_PLAYER;
+        turn = (turn+1) % N_PLAYER; // turn== 0 1 2 
 
 	printf("\n");
 	printf("\n");
