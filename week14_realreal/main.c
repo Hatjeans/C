@@ -30,8 +30,7 @@ char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; // 상태 설명
 
  // 모두 END인데 동전 개수가 같을 경우, 먼저 들어온 순서를 알아내기위해  카운트 하기 위함  
 int theOrderofEND [N_PLAYER] = {-1,-1,-1};  // 카운트를 인덱스로 하여 들어온 순서대로 플레이어의 인덱스를 저장  
-
-
+int turn_cnt=0;
 
 
 // ----- EX. 4 : player ------------
@@ -90,6 +89,7 @@ void printPlayerPosition(int player)
     }
     printf("|\n");
 }
+
 void printPlayerStatus(void)
 {
     int i;
@@ -126,7 +126,7 @@ int getAlivePlayer(void)
    for (i=0;i<N_PLAYER;i++)
    {
    	if (player_status[i] == PLAYERSTATUS_END)
-   	{
+   	{	
    		cnt++;
 		} 
    	
@@ -243,7 +243,8 @@ int main(int argc, const char * argv[]) {
     
     int i;
     int turn=0; 
-    int cnt = 0; 
+    int cnt;
+ 
     
     int pos=0;// 위치변수 선언 18p 
 // ----- EX. 1 : Preparation------------
@@ -289,8 +290,26 @@ int main(int argc, const char * argv[]) {
         
 // ----- EX. 4 : player ------------
         if (player_status[turn] != PLAYERSTATUS_LIVE)
-        {
+        {	
+        	printf("%d\n",turn);
             turn = (turn + 1)%N_PLAYER;  
+            printf("%d\n",turn);
+            
+            
+            if (turn == 0)  // 여기에도 샤크를 넣어줘야 상태가 변해도 빼먹지 않고 상어가 움직임  
+		{
+			int shark_pos = board_stepShark();
+			if (shark_pos>18) 
+			{
+				shark_pos = 18;
+			}
+			printf("\n Shark moved to %d \n", shark_pos);
+			printf("\n");
+			
+			checkDie();
+			printf("%d\n",turn); 
+		}
+
             continue;
         }
 // ----- EX. 4 : player ------------
@@ -321,6 +340,12 @@ int main(int argc, const char * argv[]) {
  
  
 // 이동 결과 출력 
+
+	if(player_status[turn] == PLAYERSTATUS_END)
+	{
+		printf("player %s reached to the end line and survived\n", player_name[turn]);
+	}
+	else
 	printf("Die result : %d , %s moved to %d \n", dieResult, player_name[turn], player_position[turn]);
         //step 2-4. coin
 // 이동한 위치에서 board_getBoardCoin 함수 호출
@@ -344,34 +369,48 @@ int main(int argc, const char * argv[]) {
 // game 반복문에서 한번 반복 후 다음 player로 넘어감 
 // turn 변수를 선언하고 반복마다 1씩 증가
 //N_PLAYER로 나누기연산 수행  
-        turn = (turn+1) % N_PLAYER; // turn== 0 1 2 
 
+    
+
+ 
+ 
+ 
+
+	printf("%d\n",turn); 
+        turn = (turn+1) % N_PLAYER; // turn== 0 1 2
+		turn_cnt++; 
+    printf("%d\n",turn); 
 	printf("\n");
 	printf("\n");
 
 	printf("\n"); // turn을 구분하기 위해서  좀 띄우겠습니다.  
 
-
-    
- // ----- EX. 5 : making shark ------------   
-    
-	if (turn == 0)
-	{
-	int shark_pos = board_stepShark();
-	printf("\n Shark moved to %d \n", shark_pos);
+    printf("\n");
 	printf("\n");
-	checkDie();
-	}
+	
+	
+	 // ----- EX. 5 : making shark ------------   
+    
+    
+     
+
+    if (turn == 0) 
+		{
+			int shark_pos = board_stepShark();
+			
+			if (shark_pos>18) 
+			{
+				shark_pos = 18;
+			}
+			printf("\n Shark moved to %d \n", shark_pos);
+			printf("\n");
+			checkDie();
+			printf("%d\n",turn); 
+		}
 
 
 
  // ----- EX. 5 : making shark ------------ 
-
-
-
-
-    printf("\n");
-	printf("\n");
 
 // ----- EX. 6 : game end ------------
     } while(game_end() == 0);
